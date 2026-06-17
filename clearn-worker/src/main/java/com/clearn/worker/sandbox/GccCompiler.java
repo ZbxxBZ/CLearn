@@ -25,7 +25,7 @@ public class GccCompiler {
         try {
             Files.writeString(workspace.resolve("main.c"), sourceCode, StandardCharsets.UTF_8);
             ProcessResult result = processExecutor.execute(
-                    List.of("gcc", "-O2", "-std=c11", "main.c", "-o", "main"),
+                    List.of("gcc", "-O2", "-std=c11", "main.c", "-lm", "-o", "main"),
                     workspace,
                     "",
                     10_000
