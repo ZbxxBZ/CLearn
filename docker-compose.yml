@@ -1,0 +1,43 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: clearn-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: clearn
+      MYSQL_USER: clearn
+      MYSQL_PASSWORD: clearn
+    ports:
+      - "3306:3306"
+    volumes:
+      - clearn-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: clearn-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - clearn-rabbitmq-data:/var/lib/rabbitmq
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: clearn-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - clearn-redis-data:/data
+
+volumes:
+  clearn-mysql-data:
+  clearn-rabbitmq-data:
+  clearn-redis-data:

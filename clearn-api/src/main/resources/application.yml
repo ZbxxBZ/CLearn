@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: CLearn
+  datasource:
+    url: ${CLEARN_DB_URL:jdbc:mysql://localhost:3306/clearn?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true}
+    username: ${CLEARN_DB_USERNAME:clearn}
+    password: ${CLEARN_DB_PASSWORD:clearn}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  rabbitmq:
+    host: ${CLEARN_RABBITMQ_HOST:localhost}
+    port: ${CLEARN_RABBITMQ_PORT:5672}
+    username: ${CLEARN_RABBITMQ_USERNAME:guest}
+    password: ${CLEARN_RABBITMQ_PASSWORD:guest}
+  data:
+    redis:
+      host: ${CLEARN_REDIS_HOST:localhost}
+      port: ${CLEARN_REDIS_PORT:6379}
+  flyway:
+    enabled: false
+    locations: classpath:db/migration
+    baseline-on-migrate: ${CLEARN_FLYWAY_BASELINE_ON_MIGRATE:true}
+    baseline-version: ${CLEARN_FLYWAY_BASELINE_VERSION:1}
+  sql:
+    init:
+      mode: never
+
+clearn:
+  web:
+    allowed-origins: ${CLEARN_WEB_ALLOWED_ORIGINS:http://localhost:5173}
+  security:
+    token-secret: ${CLEARN_TOKEN_SECRET:dev-token-secret-change-me-32chars}
+    token-ttl: ${CLEARN_TOKEN_TTL:PT2H}
+    internal-token: ${CLEARN_INTERNAL_TOKEN:dev-internal-token}
+  submission:
+    max-source-bytes: ${CLEARN_MAX_SOURCE_BYTES:65536}
+    rate-limit:
+      enabled: ${CLEARN_SUBMISSION_RATE_LIMIT_ENABLED:true}
+      max-requests: ${CLEARN_SUBMISSION_RATE_LIMIT_MAX_REQUESTS:3}
+      window: ${CLEARN_SUBMISSION_RATE_LIMIT_WINDOW:PT10S}

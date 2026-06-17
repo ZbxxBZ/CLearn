@@ -1,0 +1,52 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### Local Codex / secrets / temporary files ###
+.codex/
+.env
+.env.*
+*.local
+*.zip
+*.tar.gz
+*.docx
+~$*.docx
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### Frontend ###
+clearn-web/node_modules/
+clearn-web/dist/
+clearn-web/.vite/
+clearn-web/npm-debug.log*
+clearn-web/yarn-debug.log*
+clearn-web/yarn-error.log*
+clearn-web/pnpm-debug.log*
