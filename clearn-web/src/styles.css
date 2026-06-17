@@ -263,6 +263,8 @@ body {
 .code-editor textarea {
   font-family: "Cascadia Code", "JetBrains Mono", Consolas, monospace;
   line-height: 1.5;
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
 }
 
 .result-box {

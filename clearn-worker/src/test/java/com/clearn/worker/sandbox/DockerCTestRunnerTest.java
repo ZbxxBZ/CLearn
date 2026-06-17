@@ -13,10 +13,10 @@ class DockerCTestRunnerTest {
 
     @Test
     void buildsDockerCommandWithSandboxLimitsAndNamedContainer() {
-        RecordingProcessExecutor executor = new RecordingProcessExecutor(new ProcessResult("", "", 0, false));
+        RecordingProcessExecutor executor = new RecordingProcessExecutor(new ProcessResult("", "CLEARN_TIME_NS=7000000\n", 0, false));
         DockerCTestRunner runner = new DockerCTestRunner(executor, () -> "clearn-judge-test");
 
-        runner.run(Path.of("workspace"), "1 2\n", 1000);
+        DockerCTestRunner.RunResult result = runner.run(Path.of("workspace"), "1 2\n", 1000);
 
         List<String> command = executor.commands().get(0);
         assertThat(command).containsExactly(
@@ -42,9 +42,45 @@ class DockerCTestRunnerTest {
                 "-w",
                 "/work",
                 "clearn-c-runner:latest",
-                "/work/main"
+                "sh",
+                "-c",
+                "start_ns=$(date +%s%N); timeout -s TERM -k 1s 1s /work/main; code=$?; end_ns=$(date +%s%N); elapsed_ns=$((end_ns - start_ns)); printf '\\nCLEARN_TIME_NS=%s\\n' \"$elapsed_ns\" >&2; exit \"$code\""
         );
+        assertThat(result.timeUsedMs()).isEqualTo(7);
         assertThat(executor.inputs()).containsExactly("1 2\n");
+    }
+
+    @Test
+    void preservesProgramStderrWhileParsingProgramTime() {
+        RecordingProcessExecutor executor = new RecordingProcessExecutor(new ProcessResult(
+                "",
+                "warning from program\nCLEARN_TIME_NS=40000000\n",
+                0,
+                false
+        ));
+        DockerCTestRunner runner = new DockerCTestRunner(executor, () -> "clearn-judge-test");
+
+        DockerCTestRunner.RunResult result = runner.run(Path.of("workspace"), "", 1000);
+
+        assertThat(result.timeUsedMs()).isEqualTo(40);
+        assertThat(result.stderr()).isEqualTo("warning from program");
+    }
+
+    @Test
+    void treatsInternalTimeoutExitCodeAsTimedOut() {
+        RecordingProcessExecutor executor = new RecordingProcessExecutor(new ProcessResult(
+                "",
+                "\nCLEARN_TIME_NS=1000000000\n",
+                124,
+                false
+        ));
+        DockerCTestRunner runner = new DockerCTestRunner(executor, () -> "clearn-judge-timeout");
+
+        DockerCTestRunner.RunResult result = runner.run(Path.of("workspace"), "", 1000);
+
+        assertThat(result.timedOut()).isTrue();
+        assertThat(result.timeUsedMs()).isEqualTo(1000);
+        assertThat(result.stderr()).isEmpty();
     }
 
     @Test

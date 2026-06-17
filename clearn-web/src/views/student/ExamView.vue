@@ -52,14 +52,7 @@ const selectedExamId = ref(null);
 const examDetail = ref({});
 const examStatus = ref(null);
 const loadingProblemId = ref(null);
-const sourceCode = ref(`#include <stdio.h>
-
-int main(void) {
-    int a, b;
-    scanf("%d%d", &a, &b);
-    printf("%d\\n", a + b);
-    return 0;
-}`);
+const sourceCode = ref('');
 
 const statusTextValue = computed(() => {
   if (examStatus.value?.status) {

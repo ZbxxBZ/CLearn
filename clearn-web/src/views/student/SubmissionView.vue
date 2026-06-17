@@ -20,7 +20,9 @@
       <el-table-column label="报错信息" min-width="260" show-overflow-tooltip>
         <template #default="{ row }">{{ errorSummaryText(row) }}</template>
       </el-table-column>
-      <el-table-column prop="timeUsedMs" label="耗时 ms" width="110" />
+      <el-table-column label="耗时（ms）" width="120">
+        <template #default="{ row }">{{ durationMsText(row.timeUsedMs) }}</template>
+      </el-table-column>
       <el-table-column label="提交时间" min-width="180">
         <template #default="{ row }">{{ formatTime(row.createdAt) }}</template>
       </el-table-column>
@@ -33,7 +35,7 @@ import { onMounted, ref } from 'vue';
 import { ElMessage } from 'element-plus';
 import { Refresh } from '@element-plus/icons-vue';
 import { api } from '../../api/client';
-import { caseProgressText, errorSummaryText, statusText } from '../../utils/statusText';
+import { caseProgressText, durationMsText, errorSummaryText, statusText } from '../../utils/statusText';
 
 const submissions = ref([]);
 

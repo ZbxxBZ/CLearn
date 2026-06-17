@@ -1,10 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import { caseProgressText, errorSummaryText, submissionResultText } from './statusText';
+import { caseProgressText, durationMsText, errorSummaryText, submissionResultText } from './statusText';
 
 describe('status text utilities', () => {
   it('formats case progress', () => {
     expect(caseProgressText({ passedTestCases: 4, totalTestCases: 5 })).toBe('4/5');
     expect(caseProgressText({ passedTestCases: 0, totalTestCases: 0 })).toBe('-');
+  });
+
+  it('formats runtime with milliseconds unit', () => {
+    expect(durationMsText(12)).toBe('12 ms');
+    expect(durationMsText(0)).toBe('0 ms');
+    expect(durationMsText(null)).toBe('-');
+    expect(durationMsText(undefined)).toBe('-');
   });
 
   it('includes compiler stderr in the full result text', () => {

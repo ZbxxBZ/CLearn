@@ -23,6 +23,13 @@ export function caseProgressText(submission) {
   return `${passed}/${total}`;
 }
 
+export function durationMsText(value) {
+  if (value === null || value === undefined || value === '') {
+    return '-';
+  }
+  return `${value} ms`;
+}
+
 export function submissionResultText(submission) {
   if (!submission) {
     return '提交后在这里查看判题状态';
@@ -30,7 +37,7 @@ export function submissionResultText(submission) {
   return `状态：${submission.statusText || statusText(submission.status)}
 分数：${submission.score ?? 0}
 通过用例：${caseProgressText(submission)}
-耗时：${submission.timeUsedMs ?? '-'} ms
+耗时：${durationMsText(submission.timeUsedMs)}
 报错信息：${submission.errorMessage || '-'}`;
 }
 

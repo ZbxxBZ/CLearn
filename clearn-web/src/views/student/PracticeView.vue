@@ -71,16 +71,7 @@ const detail = ref(null);
 const selectedProblemId = ref(null);
 const submitting = ref(false);
 const result = ref(null);
-const sourceCode = ref(`#include <stdio.h>
-
-int main(void) {
-    int a, b;
-    if (scanf("%d%d", &a, &b) != 2) {
-        return 0;
-    }
-    printf("%d\\n", a + b);
-    return 0;
-}`);
+const sourceCode = ref('');
 
 const resultText = computed(() => {
   return submissionResultText(result.value);

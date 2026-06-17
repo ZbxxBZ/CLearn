@@ -2,7 +2,7 @@ FROM debian:12-slim
 
 RUN useradd --create-home --shell /usr/sbin/nologin runner \
     && apt-get update \
-    && apt-get install -y --no-install-recommends libc6 \
+    && apt-get install -y --no-install-recommends libc6 coreutils \
     && rm -rf /var/lib/apt/lists/*
 
 USER runner
