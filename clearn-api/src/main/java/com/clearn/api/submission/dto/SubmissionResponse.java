@@ -9,6 +9,7 @@ public record SubmissionResponse(
         String language,
         String sourceCode,
         String status,
+        String statusText,
         Integer score,
         Long timeUsedMs,
         Long memoryUsedKb,

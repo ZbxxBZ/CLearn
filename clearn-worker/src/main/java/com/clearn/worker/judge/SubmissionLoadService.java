@@ -30,6 +30,7 @@ public class SubmissionLoadService {
                    sort_order as sortOrder
             from test_cases
             where problem_id = ?
+              and sample = false
             order by sort_order, id
             """;
 

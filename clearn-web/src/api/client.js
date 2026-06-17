@@ -1,6 +1,6 @@
 import { getSession } from '../stores/session';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 export async function api(path, options = {}) {
   const headers = new Headers(options.headers || {});

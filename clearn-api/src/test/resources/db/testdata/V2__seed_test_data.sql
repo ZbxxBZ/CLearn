@@ -30,5 +30,9 @@ VALUES (
 
 INSERT INTO test_cases (problem_id, input_data, expected_output, sample, sort_order)
 VALUES
-    ((SELECT id FROM problems WHERE title = 'A+B Problem'), '1 2', '3', TRUE, 1),
-    ((SELECT id FROM problems WHERE title = 'A+B Problem'), '100 200', '300', FALSE, 2);
+    ((SELECT id FROM problems WHERE title = 'A+B Problem'), '1 2', '3', TRUE, 1001),
+    ((SELECT id FROM problems WHERE title = 'A+B Problem'), '1 2', '3', FALSE, 1),
+    ((SELECT id FROM problems WHERE title = 'A+B Problem'), '100 200', '300', FALSE, 2),
+    ((SELECT id FROM problems WHERE title = 'A+B Problem'), '-5 8', '3', FALSE, 3),
+    ((SELECT id FROM problems WHERE title = 'A+B Problem'), '0 0', '0', FALSE, 4),
+    ((SELECT id FROM problems WHERE title = 'A+B Problem'), '999 1', '1000', FALSE, 5);

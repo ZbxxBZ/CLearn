@@ -32,6 +32,15 @@
           <dt>限制</dt>
           <dd>{{ detail.timeLimitMs }} ms / {{ detail.memoryLimitMb }} MB</dd>
         </dl>
+        <section v-if="detail.samples?.length" class="sample-list">
+          <h3>样例</h3>
+          <div v-for="sample in detail.samples" :key="sample.id || sample.sortOrder" class="sample-item">
+            <strong>输入</strong>
+            <pre>{{ sample.inputData }}</pre>
+            <strong>输出</strong>
+            <pre>{{ sample.expectedOutput }}</pre>
+          </div>
+        </section>
       </section>
       <el-empty v-else description="请选择左侧题目" />
     </el-card>
@@ -54,6 +63,7 @@ import { computed, onMounted, ref } from 'vue';
 import { ElMessage } from 'element-plus';
 import { Refresh, Upload } from '@element-plus/icons-vue';
 import { api, toJsonBody } from '../../api/client';
+import { statusText } from '../../utils/statusText';
 
 const TERMINAL_STATUSES = ['AC', 'WA', 'CE', 'TLE', 'MLE', 'RE', 'SE'];
 const problems = ref([]);
@@ -72,7 +82,15 @@ int main(void) {
     return 0;
 }`);
 
-const resultText = computed(() => result.value ? JSON.stringify(result.value, null, 2) : '提交后在这里查看判题状态');
+const resultText = computed(() => {
+  if (!result.value) {
+    return '提交后在这里查看判题状态';
+  }
+  return `状态：${result.value.statusText || statusText(result.value.status)}
+分数：${result.value.score ?? 0}
+耗时：${result.value.timeUsedMs ?? '-'} ms
+错误：${result.value.errorMessage || '-'}`;
+});
 
 async function loadProblems() {
   problems.value = await api('/api/problems');

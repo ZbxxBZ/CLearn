@@ -76,6 +76,14 @@ public interface TestCaseMapper {
             @Param("id") Long id
     );
 
+    @Select("""
+            select count(*)
+            from test_cases
+            where problem_id = #{problemId}
+              and sample = false
+            """)
+    int countJudgeCasesByProblemId(Long problemId);
+
     @Insert("""
             insert into test_cases (
                 problem_id,
@@ -110,4 +118,10 @@ public interface TestCaseMapper {
             where id = #{id}
             """)
     int deleteById(Long id);
+
+    @Delete("""
+            delete from test_cases
+            where problem_id = #{problemId}
+            """)
+    int deleteByProblemId(Long problemId);
 }

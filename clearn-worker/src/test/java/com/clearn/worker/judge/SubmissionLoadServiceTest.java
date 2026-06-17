@@ -74,7 +74,7 @@ class SubmissionLoadServiceTest {
     }
 
     @Test
-    void loadReadsSourceProblemLimitsAndTestCasesSortedBySortOrder() {
+    void loadReadsSourceProblemLimitsAndJudgeTestCasesSortedBySortOrder() {
         SubmissionLoadService.LoadedSubmission loaded = service.load(10001L);
 
         assertThat(loaded.submissionId()).isEqualTo(10001L);
@@ -85,9 +85,11 @@ class SubmissionLoadServiceTest {
         assertThat(loaded.memoryLimitMb()).isEqualTo(64);
         assertThat(loaded.testCases())
                 .extracting(SubmissionLoadService.LoadedTestCase::sortOrder)
-                .containsExactly(10, 20, 30);
+                .containsExactly(20, 30);
         assertThat(loaded.testCases())
                 .extracting(SubmissionLoadService.LoadedTestCase::inputData)
-                .containsExactly("1 2", "100 200", "5 8");
+                .containsExactly("100 200", "5 8");
+        assertThat(loaded.testCases())
+                .noneMatch(SubmissionLoadService.LoadedTestCase::sample);
     }
 }

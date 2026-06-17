@@ -169,6 +169,7 @@ public class SubmissionService {
                 submission.getLanguage(),
                 submission.getSourceCode(),
                 submission.getStatus(),
+                statusText(submission.getStatus()),
                 submission.getScore(),
                 toLong(submission.getTimeUsedMs()),
                 toLong(submission.getMemoryUsedKb()),
@@ -180,6 +181,21 @@ public class SubmissionService {
 
     private Long toLong(Integer value) {
         return value == null ? null : value.longValue();
+    }
+
+    private String statusText(String status) {
+        return switch (status) {
+            case "PENDING" -> "等待判题";
+            case "JUDGING" -> "判题中";
+            case "AC" -> "通过";
+            case "WA" -> "答案错误";
+            case "CE" -> "编译错误";
+            case "TLE" -> "运行超时";
+            case "MLE" -> "内存超限";
+            case "RE" -> "运行错误";
+            case "SE" -> "系统错误";
+            default -> status;
+        };
     }
 
     private OffsetDateTime toOffsetDateTime(java.time.LocalDateTime value) {

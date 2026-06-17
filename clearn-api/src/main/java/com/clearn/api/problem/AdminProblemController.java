@@ -2,6 +2,7 @@ package com.clearn.api.problem;
 
 import com.clearn.api.problem.dto.ProblemCreateRequest;
 import com.clearn.api.problem.dto.ProblemDetailResponse;
+import com.clearn.api.problem.dto.ProblemImportResponse;
 import com.clearn.api.problem.dto.ProblemUpdateRequest;
 import com.clearn.api.problem.dto.TestCaseCreateRequest;
 import com.clearn.api.problem.dto.TestCaseResponse;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.NoSuchElementException;
 
@@ -32,6 +35,11 @@ public class AdminProblemController {
     @PostMapping("/problems")
     public ApiResponse<Long> createProblem(@RequestBody ProblemCreateRequest request) {
         return ApiResponse.success(problemService.createProblem(request));
+    }
+
+    @PostMapping("/problems/import")
+    public ApiResponse<ProblemImportResponse> importProblems(@RequestParam("file") MultipartFile file) {
+        return ApiResponse.success(problemService.importProblems(file));
     }
 
     @PutMapping("/problems/{id}")

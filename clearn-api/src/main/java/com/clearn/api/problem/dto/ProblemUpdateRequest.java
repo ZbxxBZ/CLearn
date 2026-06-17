@@ -1,5 +1,7 @@
 package com.clearn.api.problem.dto;
 
+import java.util.List;
+
 public record ProblemUpdateRequest(
         String title,
         String description,
@@ -10,6 +12,8 @@ public record ProblemUpdateRequest(
         Integer timeLimitMs,
         Integer memoryLimitMb,
         Integer score,
-        Boolean enabled
+        Boolean enabled,
+        List<TestCaseCreateRequest> judgeCases,
+        List<TestCaseCreateRequest> samples
 ) {
 }

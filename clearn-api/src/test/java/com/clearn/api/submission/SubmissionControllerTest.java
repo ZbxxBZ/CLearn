@@ -71,7 +71,8 @@ class SubmissionControllerTest {
                 .andExpect(jsonPath("$.data.id").value(submissionId))
                 .andExpect(jsonPath("$.data.problemId").value(problemId))
                 .andExpect(jsonPath("$.data.language").value("C"))
-                .andExpect(jsonPath("$.data.status").value("PENDING"));
+                .andExpect(jsonPath("$.data.status").value("PENDING"))
+                .andExpect(jsonPath("$.data.statusText").value("等待判题"));
     }
 
     @Test
@@ -86,7 +87,8 @@ class SubmissionControllerTest {
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data[0].id").value(submissionId))
                 .andExpect(jsonPath("$.data[0].problemId").value(problemId))
-                .andExpect(jsonPath("$.data[0].status").value("PENDING"));
+                .andExpect(jsonPath("$.data[0].status").value("PENDING"))
+                .andExpect(jsonPath("$.data[0].statusText").value("等待判题"));
     }
 
     @Test

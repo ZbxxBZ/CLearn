@@ -10,7 +10,9 @@
       <el-table-column prop="id" label="ID" width="80" />
       <el-table-column prop="problemId" label="题目" width="90" />
       <el-table-column prop="examId" label="考试" width="90" />
-      <el-table-column prop="status" label="状态" width="100" />
+      <el-table-column label="状态" width="120">
+        <template #default="{ row }">{{ row.statusText || statusText(row.status) }}</template>
+      </el-table-column>
       <el-table-column prop="score" label="分数" width="90" />
       <el-table-column prop="timeUsedMs" label="耗时 ms" width="110" />
       <el-table-column label="提交时间" min-width="180">
@@ -25,6 +27,7 @@ import { onMounted, ref } from 'vue';
 import { ElMessage } from 'element-plus';
 import { Refresh } from '@element-plus/icons-vue';
 import { api } from '../../api/client';
+import { statusText } from '../../utils/statusText';
 
 const submissions = ref([]);
 

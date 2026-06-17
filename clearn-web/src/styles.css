@@ -185,6 +185,25 @@ body {
   gap: 0 12px;
 }
 
+.case-row {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  margin-bottom: 10px;
+}
+
+.case-index {
+  min-height: 54px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #f8fafc;
+  color: var(--muted);
+  font-weight: 650;
+}
+
 .problem-detail {
   display: grid;
   gap: 12px;
@@ -210,6 +229,35 @@ body {
 .problem-detail dd {
   margin: 0;
   line-height: 1.6;
+}
+
+.sample-list {
+  display: grid;
+  gap: 10px;
+}
+
+.sample-list h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.sample-item {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
+.sample-item pre {
+  margin: 0;
+  padding: 8px;
+  overflow: auto;
+  border-radius: 4px;
+  background: #ffffff;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .code-editor textarea {
@@ -248,7 +296,8 @@ body {
 @media (max-width: 1120px) {
   .portal-shell,
   .content-grid.two-columns,
-  .form-grid {
+  .form-grid,
+  .case-row {
     grid-template-columns: 1fr;
   }
 
