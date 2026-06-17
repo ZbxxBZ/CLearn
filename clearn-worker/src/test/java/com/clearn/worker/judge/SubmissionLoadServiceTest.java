@@ -30,15 +30,24 @@ class SubmissionLoadServiceTest {
                     id bigint primary key,
                     title varchar(200) not null,
                     time_limit_ms int not null,
-                    memory_limit_mb int not null
+                    memory_limit_mb int not null,
+                    score int not null
                 )
                 """);
         jdbcTemplate.execute("""
                 create table submissions (
                     id bigint primary key,
                     problem_id bigint not null,
+                    exam_id bigint,
                     language varchar(32) not null,
                     source_code text not null
+                )
+                """);
+        jdbcTemplate.execute("""
+                create table exam_problems (
+                    exam_id bigint not null,
+                    problem_id bigint not null,
+                    score int not null
                 )
                 """);
         jdbcTemplate.execute("""
@@ -52,12 +61,12 @@ class SubmissionLoadServiceTest {
                 )
                 """);
         jdbcTemplate.update("""
-                insert into problems (id, title, time_limit_ms, memory_limit_mb)
-                values (3001, 'A+B Problem', 1500, 64)
+                insert into problems (id, title, time_limit_ms, memory_limit_mb, score)
+                values (3001, 'A+B Problem', 1500, 64, 100)
                 """);
         jdbcTemplate.update("""
-                insert into submissions (id, problem_id, language, source_code)
-                values (10001, 3001, 'C', '#include <stdio.h>\\nint main(void){int a,b;scanf("%d %d",&a,&b);printf("%d\\\\n", a+b);return 0;}')
+                insert into submissions (id, problem_id, exam_id, language, source_code)
+                values (10001, 3001, null, 'C', '#include <stdio.h>\\nint main(void){int a,b;scanf("%d %d",&a,&b);printf("%d\\\\n", a+b);return 0;}')
                 """);
         jdbcTemplate.update("""
                 insert into test_cases (id, problem_id, input_data, expected_output, sample, sort_order)
@@ -83,6 +92,7 @@ class SubmissionLoadServiceTest {
         assertThat(loaded.sourceCode()).contains("scanf");
         assertThat(loaded.timeLimitMs()).isEqualTo(1500);
         assertThat(loaded.memoryLimitMb()).isEqualTo(64);
+        assertThat(loaded.maxScore()).isEqualTo(100);
         assertThat(loaded.testCases())
                 .extracting(SubmissionLoadService.LoadedTestCase::sortOrder)
                 .containsExactly(20, 30);

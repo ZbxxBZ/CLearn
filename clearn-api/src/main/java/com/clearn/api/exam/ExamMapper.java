@@ -146,7 +146,7 @@ public interface ExamMapper {
             select ep.problem_id as problemId,
                    p.title,
                    ep.score as maxScore,
-                   case when best.status = 'AC' then ep.score else 0 end as score,
+                   coalesce(round(ep.score * best.score / nullif(p.score, 0)), 0) as score,
                    best.id as bestSubmissionId,
                    best.status as bestStatus,
                    ep.sort_order as sortOrder
@@ -159,7 +159,7 @@ public interface ExamMapper {
                   where s.exam_id = ep.exam_id
                     and s.problem_id = ep.problem_id
                     and s.user_id = #{userId}
-                  order by case when s.status = 'AC' then ep.score else 0 end desc,
+                  order by coalesce(round(ep.score * s.score / nullif(p.score, 0)), 0) desc,
                            s.id desc
                   limit 1
               )
@@ -175,7 +175,7 @@ public interface ExamMapper {
                    ep.problem_id as problemId,
                    p.title,
                    ep.score as maxScore,
-                   case when best.status = 'AC' then ep.score else 0 end as score,
+                   coalesce(round(ep.score * best.score / nullif(p.score, 0)), 0) as score,
                    best.id as bestSubmissionId,
                    best.status as bestStatus,
                    ep.sort_order as sortOrder
@@ -194,7 +194,7 @@ public interface ExamMapper {
                   where s.exam_id = ep.exam_id
                     and s.problem_id = ep.problem_id
                     and s.user_id = u.id
-                  order by case when s.status = 'AC' then ep.score else 0 end desc,
+                  order by coalesce(round(ep.score * s.score / nullif(p.score, 0)), 0) desc,
                            s.id desc
                   limit 1
               )

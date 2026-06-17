@@ -76,6 +76,56 @@ class SubmissionControllerTest {
     }
 
     @Test
+    void studentReadsJudgedSubmissionWithCaseProgress() throws Exception {
+        String token = loginAndReadToken("student");
+        Long submissionId = insertSubmissionForUser(userId("student"), seedProblemId());
+        jdbcTemplate.update(
+                """
+                        update submissions
+                        set status = 'WA',
+                            score = 80,
+                            passed_test_cases = 4,
+                            total_test_cases = 5
+                        where id = ?
+                        """,
+                submissionId
+        );
+
+        mockMvc.perform(get("/api/submissions/{id}", submissionId)
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.score").value(80))
+                .andExpect(jsonPath("$.data.passedTestCases").value(4))
+                .andExpect(jsonPath("$.data.totalTestCases").value(5));
+    }
+
+    @Test
+    void studentReadsCompileErrorMessage() throws Exception {
+        String token = loginAndReadToken("student");
+        Long submissionId = insertSubmissionForUser(userId("student"), seedProblemId());
+        jdbcTemplate.update(
+                """
+                        update submissions
+                        set status = 'CE',
+                            score = 0,
+                            passed_test_cases = 0,
+                            total_test_cases = 5,
+                            error_message = ?
+                        where id = ?
+                        """,
+                "main.c:1: error: expected ';'",
+                submissionId
+        );
+
+        mockMvc.perform(get("/api/submissions/{id}", submissionId)
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.status").value("CE"))
+                .andExpect(jsonPath("$.data.statusText").value("编译错误"))
+                .andExpect(jsonPath("$.data.errorMessage").value("main.c:1: error: expected ';'"));
+    }
+
+    @Test
     void studentListsOwnSubmissionsSuccessfully() throws Exception {
         String token = loginAndReadToken("student");
         Long problemId = seedProblemId();

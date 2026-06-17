@@ -90,14 +90,14 @@ class ExamControllerTest {
                 problemId
         );
         jdbcTemplate.update(
-                "update submissions set status = 'AC', score = 100, judged_at = CURRENT_TIMESTAMP where id = ?",
+                "update submissions set status = 'WA', score = 80, passed_test_cases = 4, total_test_cases = 5, judged_at = CURRENT_TIMESTAMP where id = ?",
                 submissionId
         );
 
         mockMvc.perform(get("/api/exams/{id}/my-result", examId)
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.totalScore").value(100))
+                .andExpect(jsonPath("$.data.totalScore").value(80))
                 .andExpect(jsonPath("$.data.problems[0].bestSubmissionId").value(submissionId));
     }
 

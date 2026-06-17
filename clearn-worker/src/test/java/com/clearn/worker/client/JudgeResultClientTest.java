@@ -55,6 +55,8 @@ class JudgeResultClientTest {
         JudgeFinishRequest request = new JudgeFinishRequest(
                 SubmissionStatus.AC,
                 100,
+                5,
+                5,
                 12L,
                 256L,
                 null

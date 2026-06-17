@@ -57,6 +57,8 @@ CREATE TABLE submissions (
     source_code TEXT NOT NULL,
     status VARCHAR(32) NOT NULL,
     score INT NOT NULL DEFAULT 0,
+    passed_test_cases INT,
+    total_test_cases INT,
     time_used_ms INT,
     memory_used_kb INT,
     error_message TEXT,

@@ -63,7 +63,7 @@ import { computed, onMounted, ref } from 'vue';
 import { ElMessage } from 'element-plus';
 import { Refresh, Upload } from '@element-plus/icons-vue';
 import { api, toJsonBody } from '../../api/client';
-import { statusText } from '../../utils/statusText';
+import { submissionResultText } from '../../utils/statusText';
 
 const TERMINAL_STATUSES = ['AC', 'WA', 'CE', 'TLE', 'MLE', 'RE', 'SE'];
 const problems = ref([]);
@@ -83,13 +83,7 @@ int main(void) {
 }`);
 
 const resultText = computed(() => {
-  if (!result.value) {
-    return '提交后在这里查看判题状态';
-  }
-  return `状态：${result.value.statusText || statusText(result.value.status)}
-分数：${result.value.score ?? 0}
-耗时：${result.value.timeUsedMs ?? '-'} ms
-错误：${result.value.errorMessage || '-'}`;
+  return submissionResultText(result.value);
 });
 
 async function loadProblems() {

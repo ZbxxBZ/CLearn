@@ -73,6 +73,8 @@ class SubmissionServiceTest {
                           and language = 'C'
                           and status = 'PENDING'
                           and score = 0
+                          and passed_test_cases = 0
+                          and total_test_cases = 0
                           and source_code like '%scanf%'
                         """,
                 Integer.class,

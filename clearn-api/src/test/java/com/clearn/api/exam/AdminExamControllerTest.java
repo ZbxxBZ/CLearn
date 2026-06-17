@@ -327,16 +327,20 @@ class AdminExamControllerTest {
                             source_code,
                             status,
                             score,
+                            passed_test_cases,
+                            total_test_cases,
                             judged_at
                         )
-                        values (?, ?, ?, 'C', ?, ?, ?, CURRENT_TIMESTAMP)
+                        values (?, ?, ?, 'C', ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
                         """,
                 userId,
                 problemId,
                 examId,
                 sourceCode,
                 status,
-                score
+                score,
+                score > 0 ? 5 : 0,
+                5
         );
         return jdbcTemplate.queryForObject(
                 "select id from submissions where source_code = ?",

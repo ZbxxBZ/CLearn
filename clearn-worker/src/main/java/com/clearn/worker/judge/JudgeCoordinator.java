@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;
+import java.util.List;
 
 @Service
 public class JudgeCoordinator {
@@ -74,36 +75,57 @@ public class JudgeCoordinator {
     private JudgeFinishRequest evaluate(Path workspace, SubmissionLoadService.LoadedSubmission submission) {
         GccCompiler.CompileResult compileResult = compiler.compile(workspace, submission.sourceCode());
         if (!compileResult.success()) {
-            return result(SubmissionStatus.CE, 0, 0L, compileResult.stderr());
+            return result(SubmissionStatus.CE, 0, 0, submission.testCases().size(), 0L, compileResult.stderr());
         }
 
         long totalTimeUsedMs = 0L;
-        for (SubmissionLoadService.LoadedTestCase testCase : submission.testCases()) {
+        int passedTestCases = 0;
+        int totalTestCases = submission.testCases().size();
+        List<SubmissionLoadService.LoadedTestCase> testCases = submission.testCases();
+        for (SubmissionLoadService.LoadedTestCase testCase : testCases) {
             DockerCTestRunner.RunResult runResult = runner.run(workspace, testCase.inputData(), submission.timeLimitMs());
             totalTimeUsedMs += runResult.timeUsedMs();
 
             if (runResult.timedOut()) {
-                return result(SubmissionStatus.TLE, 0, totalTimeUsedMs, null);
+                return result(SubmissionStatus.TLE, scoreOf(submission.maxScore(), passedTestCases, totalTestCases), passedTestCases, totalTestCases, totalTimeUsedMs, null);
             }
             if (runResult.exitCode() != 0) {
-                return result(SubmissionStatus.RE, 0, totalTimeUsedMs, runResult.stderr());
+                return result(SubmissionStatus.RE, scoreOf(submission.maxScore(), passedTestCases, totalTestCases), passedTestCases, totalTestCases, totalTimeUsedMs, runResult.stderr());
             }
             if (!outputComparator.matches(testCase.expectedOutput(), runResult.stdout())) {
-                return result(SubmissionStatus.WA, 0, totalTimeUsedMs, null);
+                continue;
             }
+            passedTestCases++;
         }
 
-        return result(SubmissionStatus.AC, 100, totalTimeUsedMs, null);
+        SubmissionStatus status = passedTestCases == totalTestCases ? SubmissionStatus.AC : SubmissionStatus.WA;
+        return result(status, scoreOf(submission.maxScore(), passedTestCases, totalTestCases), passedTestCases, totalTestCases, totalTimeUsedMs, null);
     }
 
-    private JudgeFinishRequest result(SubmissionStatus status, Integer score, Long timeUsedMs, String errorMessage) {
+    private JudgeFinishRequest result(
+            SubmissionStatus status,
+            Integer score,
+            Integer passedTestCases,
+            Integer totalTestCases,
+            Long timeUsedMs,
+            String errorMessage
+    ) {
         return new JudgeFinishRequest(
                 status,
                 score,
+                passedTestCases,
+                totalTestCases,
                 timeUsedMs,
                 null,
                 summary(errorMessage)
         );
+    }
+
+    private int scoreOf(Integer maxScore, int passedTestCases, int totalTestCases) {
+        if (maxScore == null || maxScore <= 0 || totalTestCases <= 0) {
+            return 0;
+        }
+        return (int) Math.round((double) maxScore * passedTestCases / totalTestCases);
     }
 
     private String summary(String value) {

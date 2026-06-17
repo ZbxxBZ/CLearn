@@ -47,16 +47,29 @@ class JudgeCoordinatorTest {
         verify(client).finish(eq(1L), argThat(result ->
                 result.status() == SubmissionStatus.AC
                         && result.score() == 100
+                        && result.passedTestCases() == 2
+                        && result.totalTestCases() == 2
                         && result.timeUsedMs() == 28
                         && result.errorMessage() == null
         ));
     }
 
     @Test
-    void returnsWrongAnswerOnFirstMismatchedCase() {
-        SubmissionLoadService loader = fakeLoaderWithCases(testCase("1 2\n", "3\n"));
+    void returnsWrongAnswerWithPartialScoreAfterCountingAllCases() {
+        SubmissionLoadService loader = fakeLoaderWithCases(
+                testCase("1 2\n", "3\n"),
+                testCase("2 3\n", "5\n"),
+                testCase("-1 -5 -3\n", "-1\n"),
+                testCase("100 100 99\n", "100\n"),
+                testCase("0 -10 5\n", "5\n")
+        );
         GccCompiler compiler = fakeCompilerSuccess();
-        DockerCTestRunner runner = fakeRunnerOutput("4\n");
+        DockerCTestRunner runner = mock(DockerCTestRunner.class);
+        when(runner.run(Path.of("workspace"), "1 2\n", 1000)).thenReturn(successfulRun("3\n", 5));
+        when(runner.run(Path.of("workspace"), "2 3\n", 1000)).thenReturn(successfulRun("5\n", 5));
+        when(runner.run(Path.of("workspace"), "-1 -5 -3\n", 1000)).thenReturn(successfulRun("0\n", 5));
+        when(runner.run(Path.of("workspace"), "100 100 99\n", 1000)).thenReturn(successfulRun("100\n", 5));
+        when(runner.run(Path.of("workspace"), "0 -10 5\n", 1000)).thenReturn(successfulRun("5\n", 5));
         JudgeResultClient client = mock(JudgeResultClient.class);
 
         JudgeCoordinator coordinator = coordinator(loader, compiler, runner, client);
@@ -64,7 +77,10 @@ class JudgeCoordinatorTest {
 
         verify(client).finish(eq(1L), argThat(result ->
                 result.status() == SubmissionStatus.WA
-                        && result.score() == 0
+                        && result.score() == 80
+                        && result.passedTestCases() == 4
+                        && result.totalTestCases() == 5
+                        && result.timeUsedMs() == 25
         ));
     }
 
@@ -223,6 +239,7 @@ class JudgeCoordinatorTest {
                 "bad source",
                 1000,
                 128,
+                100,
                 List.of(testCases)
         ));
         return loader;

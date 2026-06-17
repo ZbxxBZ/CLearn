@@ -44,7 +44,7 @@ import { computed, onMounted, ref } from 'vue';
 import { ElMessage } from 'element-plus';
 import { Refresh } from '@element-plus/icons-vue';
 import { api, toJsonBody } from '../../api/client';
-import { statusText } from '../../utils/statusText';
+import { submissionResultText } from '../../utils/statusText';
 
 const TERMINAL_STATUSES = ['AC', 'WA', 'CE', 'TLE', 'MLE', 'RE', 'SE'];
 const exams = ref([]);
@@ -63,10 +63,7 @@ int main(void) {
 
 const statusTextValue = computed(() => {
   if (examStatus.value?.status) {
-    return `状态：${examStatus.value.statusText || statusText(examStatus.value.status)}
-分数：${examStatus.value.score ?? 0}
-耗时：${examStatus.value.timeUsedMs ?? '-'} ms
-错误：${examStatus.value.errorMessage || '-'}`;
+    return submissionResultText(examStatus.value);
   }
   return JSON.stringify(examStatus.value || examDetail.value || '请选择考试', null, 2);
 });

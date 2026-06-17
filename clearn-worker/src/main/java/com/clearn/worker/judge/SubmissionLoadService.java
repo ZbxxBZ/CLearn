@@ -15,9 +15,15 @@ public class SubmissionLoadService {
                    s.language as language,
                    s.source_code as sourceCode,
                    p.time_limit_ms as timeLimitMs,
-                   p.memory_limit_mb as memoryLimitMb
+                   p.memory_limit_mb as memoryLimitMb,
+                   case
+                     when s.exam_id is not null then coalesce(ep.score, p.score)
+                     else p.score
+                   end as maxScore
             from submissions s
             join problems p on p.id = s.problem_id
+            left join exam_problems ep on ep.exam_id = s.exam_id
+                                      and ep.problem_id = s.problem_id
             where s.id = ?
             """;
 
@@ -51,7 +57,8 @@ public class SubmissionLoadService {
                     rs.getString("language"),
                     rs.getString("sourceCode"),
                     rs.getInt("timeLimitMs"),
-                    rs.getInt("memoryLimitMb")
+                    rs.getInt("memoryLimitMb"),
+                    rs.getInt("maxScore")
             );
         }, submissionId);
         if (header == null) {
@@ -78,6 +85,7 @@ public class SubmissionLoadService {
                 header.sourceCode(),
                 header.timeLimitMs(),
                 header.memoryLimitMb(),
+                header.maxScore(),
                 List.copyOf(testCases)
         );
     }
@@ -88,7 +96,8 @@ public class SubmissionLoadService {
             String language,
             String sourceCode,
             Integer timeLimitMs,
-            Integer memoryLimitMb
+            Integer memoryLimitMb,
+            Integer maxScore
     ) {
     }
 
@@ -99,6 +108,7 @@ public class SubmissionLoadService {
             String sourceCode,
             Integer timeLimitMs,
             Integer memoryLimitMb,
+            Integer maxScore,
             List<LoadedTestCase> testCases
     ) {
     }

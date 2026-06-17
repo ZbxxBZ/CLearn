@@ -11,6 +11,8 @@ public class Submission {
     private String sourceCode;
     private String status;
     private Integer score;
+    private Integer passedTestCases;
+    private Integer totalTestCases;
     private Integer timeUsedMs;
     private Integer memoryUsedKb;
     private String errorMessage;
@@ -79,6 +81,22 @@ public class Submission {
 
     public void setScore(Integer score) {
         this.score = score;
+    }
+
+    public Integer getPassedTestCases() {
+        return passedTestCases;
+    }
+
+    public void setPassedTestCases(Integer passedTestCases) {
+        this.passedTestCases = passedTestCases;
+    }
+
+    public Integer getTotalTestCases() {
+        return totalTestCases;
+    }
+
+    public void setTotalTestCases(Integer totalTestCases) {
+        this.totalTestCases = totalTestCases;
     }
 
     public Integer getTimeUsedMs() {

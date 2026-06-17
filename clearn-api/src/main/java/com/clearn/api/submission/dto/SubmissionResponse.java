@@ -11,6 +11,8 @@ public record SubmissionResponse(
         String status,
         String statusText,
         Integer score,
+        Integer passedTestCases,
+        Integer totalTestCases,
         Long timeUsedMs,
         Long memoryUsedKb,
         String errorMessage,

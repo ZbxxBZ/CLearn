@@ -75,6 +75,8 @@ class InternalJudgeControllerTest {
         JudgeFinishRequest request = new JudgeFinishRequest(
                 SubmissionStatus.AC,
                 100,
+                5,
+                5,
                 12L,
                 2048L,
                 "all cases passed"
@@ -91,6 +93,8 @@ class InternalJudgeControllerTest {
         SubmissionRow row = rowOf(submissionId);
         assertThat(row.status()).isEqualTo("AC");
         assertThat(row.score()).isEqualTo(100);
+        assertThat(row.passedTestCases()).isEqualTo(5);
+        assertThat(row.totalTestCases()).isEqualTo(5);
         assertThat(row.timeUsedMs()).isEqualTo(12);
         assertThat(row.memoryUsedKb()).isEqualTo(2048);
         assertThat(row.errorMessage()).isEqualTo("all cases passed");
@@ -103,6 +107,8 @@ class InternalJudgeControllerTest {
         JudgeFinishRequest request = new JudgeFinishRequest(
                 SubmissionStatus.PENDING,
                 0,
+                0,
+                5,
                 null,
                 null,
                 null
@@ -122,6 +128,8 @@ class InternalJudgeControllerTest {
         Long submissionId = insertSubmission(SubmissionStatus.JUDGING);
         JudgeFinishRequest request = new JudgeFinishRequest(
                 SubmissionStatus.WA,
+                -1,
+                -1,
                 -1,
                 -12L,
                 -2048L,
@@ -148,6 +156,8 @@ class InternalJudgeControllerTest {
         JudgeFinishRequest request = new JudgeFinishRequest(
                 SubmissionStatus.AC,
                 100,
+                5,
+                5,
                 12L,
                 2048L,
                 null
@@ -233,12 +243,14 @@ class InternalJudgeControllerTest {
                             source_code,
                             status,
                             score,
+                            passed_test_cases,
+                            total_test_cases,
                             time_used_ms,
                             memory_used_kb,
                             error_message,
                             judged_at
                         )
-                        values (?, ?, null, 'C', ?, ?, ?, ?, ?, ?, ?)
+                        values (?, ?, null, 'C', ?, ?, ?, 0, 0, ?, ?, ?, ?)
                         """,
                 userId("student"),
                 seedProblemId(),
@@ -286,6 +298,8 @@ class InternalJudgeControllerTest {
                 """
                         select status,
                                score,
+                               passed_test_cases,
+                               total_test_cases,
                                time_used_ms,
                                memory_used_kb,
                                error_message,
@@ -296,6 +310,8 @@ class InternalJudgeControllerTest {
                 (rs, rowNum) -> new SubmissionRow(
                         rs.getString("status"),
                         rs.getInt("score"),
+                        (Integer) rs.getObject("passed_test_cases"),
+                        (Integer) rs.getObject("total_test_cases"),
                         (Integer) rs.getObject("time_used_ms"),
                         (Integer) rs.getObject("memory_used_kb"),
                         rs.getString("error_message"),
@@ -323,6 +339,8 @@ class InternalJudgeControllerTest {
     private record SubmissionRow(
             String status,
             Integer score,
+            Integer passedTestCases,
+            Integer totalTestCases,
             Integer timeUsedMs,
             Integer memoryUsedKb,
             String errorMessage,

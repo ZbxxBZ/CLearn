@@ -47,6 +47,8 @@ public class InternalJudgeService {
                 submissionId,
                 validRequest.status().name(),
                 defaultScore(validRequest.score()),
+                defaultCount(validRequest.passedTestCases()),
+                defaultCount(validRequest.totalTestCases()),
                 toInteger(validRequest.timeUsedMs(), "timeUsedMs"),
                 toInteger(validRequest.memoryUsedKb(), "memoryUsedKb"),
                 validRequest.errorMessage(),
@@ -76,6 +78,13 @@ public class InternalJudgeService {
             throw new IllegalArgumentException("finish status must be terminal");
         }
         requireNonNegative(request.score(), "score");
+        requireNonNegative(request.passedTestCases(), "passedTestCases");
+        requireNonNegative(request.totalTestCases(), "totalTestCases");
+        if (request.passedTestCases() != null
+                && request.totalTestCases() != null
+                && request.passedTestCases() > request.totalTestCases()) {
+            throw new IllegalArgumentException("passedTestCases must not exceed totalTestCases");
+        }
         requireNonNegative(request.timeUsedMs(), "timeUsedMs");
         requireNonNegative(request.memoryUsedKb(), "memoryUsedKb");
         return request;
@@ -104,6 +113,10 @@ public class InternalJudgeService {
 
     private int defaultScore(Integer score) {
         return score == null ? 0 : score;
+    }
+
+    private int defaultCount(Integer count) {
+        return count == null ? 0 : count;
     }
 
     private Integer toInteger(Long value, String fieldName) {

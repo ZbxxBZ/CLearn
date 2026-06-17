@@ -85,6 +85,8 @@ public class SubmissionService {
         submission.setSourceCode(sourceCode);
         submission.setStatus(SubmissionStatus.PENDING.name());
         submission.setScore(0);
+        submission.setPassedTestCases(0);
+        submission.setTotalTestCases(0);
         submission.setCreatedAt(createdAt.toLocalDateTime());
         submissionMapper.insert(submission);
 
@@ -171,6 +173,8 @@ public class SubmissionService {
                 submission.getStatus(),
                 statusText(submission.getStatus()),
                 submission.getScore(),
+                submission.getPassedTestCases(),
+                submission.getTotalTestCases(),
                 toLong(submission.getTimeUsedMs()),
                 toLong(submission.getMemoryUsedKb()),
                 submission.getErrorMessage(),

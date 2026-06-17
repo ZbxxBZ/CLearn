@@ -21,6 +21,8 @@ public interface SubmissionMapper {
                 source_code,
                 status,
                 score,
+                passed_test_cases,
+                total_test_cases,
                 created_at
             )
             values (
@@ -31,6 +33,8 @@ public interface SubmissionMapper {
                 #{sourceCode},
                 #{status},
                 #{score},
+                #{passedTestCases},
+                #{totalTestCases},
                 #{createdAt}
             )
             """)
@@ -46,6 +50,8 @@ public interface SubmissionMapper {
                    source_code as sourceCode,
                    status,
                    score,
+                   passed_test_cases as passedTestCases,
+                   total_test_cases as totalTestCases,
                    time_used_ms as timeUsedMs,
                    memory_used_kb as memoryUsedKb,
                    error_message as errorMessage,
@@ -65,6 +71,8 @@ public interface SubmissionMapper {
                    source_code as sourceCode,
                    status,
                    score,
+                   passed_test_cases as passedTestCases,
+                   total_test_cases as totalTestCases,
                    time_used_ms as timeUsedMs,
                    memory_used_kb as memoryUsedKb,
                    error_message as errorMessage,
@@ -85,6 +93,8 @@ public interface SubmissionMapper {
                    source_code as sourceCode,
                    status,
                    score,
+                   passed_test_cases as passedTestCases,
+                   total_test_cases as totalTestCases,
                    time_used_ms as timeUsedMs,
                    memory_used_kb as memoryUsedKb,
                    error_message as errorMessage,
@@ -108,6 +118,8 @@ public interface SubmissionMapper {
             update submissions
             set status = #{status},
                 score = #{score},
+                passed_test_cases = #{passedTestCases},
+                total_test_cases = #{totalTestCases},
                 time_used_ms = #{timeUsedMs},
                 memory_used_kb = #{memoryUsedKb},
                 error_message = #{errorMessage},
@@ -119,6 +131,8 @@ public interface SubmissionMapper {
             @Param("id") Long id,
             @Param("status") String status,
             @Param("score") Integer score,
+            @Param("passedTestCases") Integer passedTestCases,
+            @Param("totalTestCases") Integer totalTestCases,
             @Param("timeUsedMs") Integer timeUsedMs,
             @Param("memoryUsedKb") Integer memoryUsedKb,
             @Param("errorMessage") String errorMessage,
